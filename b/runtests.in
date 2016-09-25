@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -eu
+
+testroot="@rootdir@/t" # FIXME: don't hardcode "/t" here?
+ZSH="@ZSH@"
+CRAM="@CRAM@"
+
+env -i \
+  PATH="$PATH" \
+  TESTROOT="$testroot" \
+  BUILDDIR="$PWD" \
+  ZSH="$ZSH" \
+  $CRAM \
+  --shell="$ZSH" \
+  ${CRAMFLAGS+$CRAMFLAGS} \
+  "${1-$testroot}" \
+  "$@"

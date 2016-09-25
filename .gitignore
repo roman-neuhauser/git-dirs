@@ -1,0 +1,7 @@
+.bs-update
+.sw?
+.*.sw?
+*.gz
+*.html
+*.spec
+/PKGBUILD

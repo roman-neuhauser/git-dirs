@@ -1,0 +1,105 @@
+#!/bin/sh
+# vim: sts=2 sw=2 et fdm=marker cms=\ #\ %s
+
+findtool() # {{{
+{
+  local val= varval= var="$1"; shift
+  eval "varval=\"\$$var\""
+  if test -n "$varval"; then
+    val=$(which $varval 2>/dev/null || :)
+  fi
+  while test -z "$val" && test "${1+set}" = set; do
+    test -z "$1" ||
+      val=$(which "$1" 2>/dev/null || :)
+    shift
+  done
+  test -n "$val" || {
+    echo >&2 "not found: $var"
+    exit 1
+  }
+  test -x "$val" || {
+    echo >&2 "not executable: $var ($val)"
+    exit 1
+  }
+  eval "$var=\"\$val\""
+} # }}}
+
+mksubstvars() # {{{
+{
+  local f=substvars
+  cat > "$f" <<-EOF
+	#!/bin/sh
+	exe=false
+	if [ "x\$1" = x-x ]; then
+	  exe=true
+	  shift
+	fi
+	if [ \$# -lt 2 ]; then
+	  src="$rootdir/\${1?}"
+	  dst="\${1%.in}"; dst="\${dst##*/}"
+	else
+	  dst="\$1"; shift
+	  src="\$*"
+	fi
+
+	prefix="$prefix"
+	datarootdir="$datarootdir"
+
+	sed \\
+	  -e "s@rootdir@$rootdirg" \\
+	  -e "s@bindir@$bindirg" \\
+	  -e "s@mandir@$mandirg" \\
+	  -e "s@prefix@$prefixg" \\
+	  -e "s@pkgname@$pkgnameg" \\
+	  -e "s@CRAM@$CRAMg" \\
+	  -e "s@HAVEOPT_SH@$HAVEOPT_SHg" \\
+	  -e "s@RST2HTML@$RST2HTMLg" \\
+	  -e "s@RST2HTMLFLAGS@$RST2HTMLFLAGSg" \\
+	  -e "s@ZSH@$ZSHg" \\
+	  "\$src" \\
+	> "\$dst"
+	if \$exe; then
+	  chmod +x "\$dst"
+	fi
+EOF
+  chmod +x $f
+} # }}}
+
+rootdir=$(dirname $0)
+
+pkgname=git-dirs
+
+prefix=/usr/local
+bindir='${prefix}/bin'
+datarootdir='${prefix}/share'
+mandir='${datarootdir}/man'
+sysconfdir_set=0
+
+for a in "$@"; do
+  case $a in
+  --bindir=*)       bindir="${a#*=}"      ;;
+  --controlpathdir=*)
+    controlpathdir="${a#*=}"
+  ;;
+  --mandir=*)       mandir="${a#*=}"      ;;
+  --prefix=*)       prefix="${a#*=}"      ;;
+  HAVEOPT_SH=*)     HAVEOPT_SH="${a#*=}"  ;;
+  ZSH=*)            ZSH="${a#*=}"         ;;
+  esac
+done
+
+findtool CRAM cram
+findtool GIT git
+findtool HAVEOPT_SH haveopt.sh
+findtool RST2HTML rst2html5 rst2html
+findtool ZSH zsh
+
+mksubstvars
+
+./substvars -x b/git-versionstring.in
+./substvars -x b/mktarball.in
+./substvars -x b/rst2html.in
+./substvars -x b/runtests.in
+./substvars -x b/substver.in
+
+./substvars GNUmakefile.in

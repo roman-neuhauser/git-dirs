@@ -1,0 +1,27 @@
+# vim: ft=zsh sw=2 sts=2 et fdm=marker cms=\ #\ %s
+
+setopt extended_glob
+setopt no_unset
+setopt warn_create_global
+
+export PATH="$PWD/.bin:$BUILDDIR:$TESTROOT:$PATH"
+export HOME="$PWD"
+export ZSH="$ZSH"
+
+function fake # {{{
+{
+  local opts=
+  if [[ "$1" == -* ]]; then
+    opts=$1
+    shift
+  fi
+  local cmd=$HOME/.bin/$1
+  mkdir -p $cmd:h
+  {
+    print -f "%s\n" \
+      "#!${ZSH?} -f" \
+      ${opts:+"set $opts"}
+    cat
+  } > $cmd
+  chmod u+x $cmd
+} # }}}

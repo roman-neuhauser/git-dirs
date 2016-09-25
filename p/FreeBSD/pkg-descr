@@ -1,0 +1,7 @@
+git-dirs facilitates using a single directory as a Git work tree
+with multiple git dirs backing (different parts of) the work tree.
+git-dirs manages .git at the top of the work tree as a gitfile
+(see git-rev-parse(1), gitrepository-layout(5), gitglossary(7)),
+repositories under .git-dirs/repo.d.
+
+WWW: https://github.com/roman-neuhauser/git-dirs

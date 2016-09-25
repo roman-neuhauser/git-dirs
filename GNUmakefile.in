@@ -1,0 +1,92 @@
+bindir      = @bindir@
+mandir      = @mandir@
+man1dir     = $(mandir)/man1
+
+INSTALL = install
+LN = ln
+
+rootdir = @rootdir@
+smandir = $(rootdir)/m
+pkgdir  = $(rootdir)/p
+srcdir  = $(rootdir)/s
+testdir = $(rootdir)/t
+
+commands  = git-dirs
+
+manpages   = $(man1pages)
+man1pages  = $(addsuffix .1,$(commands))
+
+htmlfiles  =
+htmlfiles += README.html
+
+tests  = $(testdir)
+
+.PHONY: all
+all: $(commands) $(manpages)
+
+$(commands): %: $(srcdir)/%.zsh
+	./substvars $@ $<
+	chmod 0755 $@
+
+$(manpages): %: $(smandir)/%.in
+	./substvars $@ $<
+
+
+.PHONY: html
+html: $(htmlfiles)
+
+$(htmlfiles): %.html: $(rootdir)/%.rst
+	./rst2html $(RST2HTMLFLAGS) $< $@
+
+
+.PHONY: check
+check: $(tests) | all
+	./runtests $^
+
+
+.PHONY: clean
+clean:
+	$(RM) $(commands) $(htmlfiles) $(manpages)
+
+
+.PHONY: install
+install: all installdirs
+	$(INSTALL) -m 0755 $(commands) $(DESTDIR)$(bindir)
+	$(INSTALL) -m 0644 $(man1pages) $(DESTDIR)$(man1dir)
+
+
+.PHONY: installdirs
+installdirs:
+	$(INSTALL) -m 0755 -d $(DESTDIR)$(bindir)
+	$(INSTALL) -m 0755 -d $(DESTDIR)$(man1dir)
+
+
+pkgname = @pkgname@
+
+.PHONY: tarball
+tarball: $(rootdir)/.git
+	./mktarball HEAD
+
+.PHONY: pkg-SUSE
+pkg-SUSE: $(name).spec
+
+$(pkgname).spec: $(pkgdir)/$(pkgname).spec.in
+	./substver $< $@ '^Version:'
+
+.PHONY: pkg-ArchLinux
+pkg-ArchLinux: PKGBUILD
+
+PKGBUILD: $(pkgdir)/PKGBUILD.in
+	./substver $< $@ '^pkgver='
+
+.PHONY: pkg-FreeBSD
+pkg-FreeBSD: FreeBSD/Makefile FreeBSD/pkg-descr FreeBSD/pkg-plist
+
+FreeBSD:
+	mkdir $@
+
+FreeBSD/Makefile: $(pkgdir)/FreeBSD/Makefile.in | FreeBSD
+	./substver $< $@ '^PORTVERSION='
+
+FreeBSD/%: $(pkgdir)/FreeBSD/% | FreeBSD
+	cp $< $@

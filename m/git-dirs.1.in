@@ -1,0 +1,225 @@
+.\" vim: tw=72 fdm=marker cms=.\\"\ %s
+.
+.\" FRONT MATTER {{{
+.Dd Sep 25, 2016
+.Os
+.Dt GIT-DIRS 1
+.
+.Sh NAME
+.Nm git\ dirs
+.Nd Manage multiple gitdirs
+.\" FRONT MATTER }}}
+.
+.\" SYNOPSIS {{{
+.Sh SYNOPSIS
+.Nm
+. Fl h | \-help
+.Nm
+. Cm activate
+. Ar REPO
+.Nm
+. Cm active
+. Op Fl -full | -relative | -short
+.Nm
+. Cm clone
+. Op Fl -no-activate
+. Ar URL
+. Op Ar REPO
+.Nm
+. Cm init
+. Op Fl -no-activate
+. Ar REPO
+.Nm
+. Cm list
+. Op Fl -full | -relative | -short
+.\" SYNOPSIS }}}
+.
+.\" DESCRIPTION {{{
+.Sh DESCRIPTION
+.Nm
+facilitates using a single directory as a
+.Xr git 1
+.Sy work tree
+with multiple
+.Sy git dirs
+backing (different parts of) the work tree.
+.Nm
+manages
+.Pa .git
+at the top of the work tree as a
+.Sy gitfile
+.Pq see Xr git-rev-parse 1 , Xr gitrepository-layout 5 , Xr gitglossary 7 ,
+repositories under
+.Pa .git-dirs/repo.d .
+.\" }}}
+.
+.\" OPTIONS {{{
+.Sh OPTIONS
+.Bl -tag -width xx
+.It Fl h
+Display usage information.
+.It Fl -help
+Display this manual page.
+.El
+.\" }}}
+.
+.\" COMMANDS {{{
+.Sh COMMANDS
+.Nm git Cm dirs Ar command Fl h
+displays usage information for
+.Ar command .
+.
+.Bl -tag -width xx
+.It Cm activate Ar REPO
+.No Associate Ev $PWD No with Ar REPO .
+.No Points Pa .git No at Pa .git-dirs/repo.d/ Ns Ar REPO .
+.
+.It Cm active Op Fl -full | -relative | -short
+Show the currently active repository.
+. Pp
+. Bl -tag -width "-r, --relative" -compact
+. It Fl f , -full
+Display full path.
+. It Fl r , -relative
+Display relative path from the top of the work tree.
+. It Fl s , -short
+Display basename.
+. El
+.
+.It Cm clone Oo Fl -no-activate Oc Ar URL Oo Ar REPO Oc
+Clone repository at
+. Ar URL
+into
+. Pa .git-dirs/repo.d/ Ns Ar REPO .
+. Ar REPO
+defaults to the basename of
+. Ar URL
+without any
+. Pa .git
+suffix.
+. Pp
+. Bl -tag -width xx -compact
+. It Fl N , -no-activate
+Do not activate the repository.
+. El
+.
+.It Cm init Oo Fl -no-activate Oc Ar REPO
+Initialize a repository in
+. Pa .git-dirs/repo.d/ Ns Ar REPO
+and activate it.
+. Pp
+. Bl -tag -width xx -compact
+. It Fl N , -no-activate
+Do not activate the repository.
+. El
+.
+.It Cm list Op Fl -full | -relative | -short
+List repositories in
+. Pa .git-dirs/repo.d .
+. Pp
+. Bl -tag -width "-r, --relative" -compact
+. It Fl f , -full
+Display full path.
+. It Fl r , -relative
+Display relative path from the top of the work tree.
+. It Fl s , -short
+Display basename.
+. El
+.El
+.\" }}}
+.
+.\" ENVIRONMENT {{{
+.Sh ENVIRONMENT
+.Nm
+may be influenced by environment variables used by
+the programs listed in
+.Sx SEE ALSO ,
+possibly others.
+.\" }}}
+.
+.\" FILES {{{
+.Sh FILES
+.Bl -item -width xx -compact
+.It
+.Li .git , Ev $XDG_CONFIG_HOME Ns Li /git
+.It
+.Li .git-dirs , Ev $XDG_CONFIG_HOME Ns Li /git-dirs
+.\" }}}
+.
+.\" EXIT STATUS {{{
+.Sh EXIT STATUS
+.Ex -std
+.\" }}}
+
+.\" EXAMPLES {{{
+.Sh EXAMPLES
+.Nm
+was conceived as a tool for versioning dotfiles in a home
+directory:
+.
+.Bd -literal -offset xx
+$ cd
+
+$ git dirs list
+
+$ printf "%s\n" mail vim zsh | xargs -n 1 git dirs init --no-activate
+initialized .git-dirs/repo.d/mail
+initialized .git-dirs/repo.d/vim
+initialized .git-dirs/repo.d/zsh
+
+$ git dirs activate mail
+activated .git-dirs/repo.d/mail
+
+$ git add .mail bin/mu
+
+$ git status -suno
+A  .mail/maildroprc
+A  .mail/muttrc
+A  bin/mu
+
+$ git commit -q -m ...
+
+$ git dirs activate vim
+activated .git-dirs/repo.d/vim
+
+$ git add .vim .vimrc
+
+$ git status -suno
+A  .vim/ftdetect/rfc.vim
+A  .vim/syntax/rfc.vim
+A  .vimrc
+
+$ git commit -q -m ...
+
+$ git dirs activate zsh
+activated .git-dirs/repo.d/zsh
+\&...
+
+$ git dirs list
+mail
+vim
+zsh
+
+$ git dirs active
+zsh
+
+.Ed
+.\" }}}
+.
+.\" SEE ALSO {{{
+.Sh SEE ALSO
+.Xr git 1 ,
+.Xr zsh 1 .
+.\" }}}
+.
+.\" AUTHORS {{{
+.Sh AUTHORS
+.An Roman Neuhauser Aq Mt rneuhauser+git-dirs@sigpipe.cz
+.\" AUTHORS }}}
+.
+.\" BUGS {{{
+.Sh BUGS
+No doubt plentiful.
+Please report them at
+.Lk https://github.com/roman-neuhauser/git-dirs/issues
+.\" BUGS }}}

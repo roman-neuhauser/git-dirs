@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -eu
+
+  git describe --always --first-parent "${1-HEAD}" \
+| sed -e 's/^v//' -e 's/-/+/g'

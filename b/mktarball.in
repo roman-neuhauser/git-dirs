@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -eu
+
+R="@rootdir@"
+pkg="@pkgname@"
+
+ver="$(./git-versionstring "${1-HEAD}")"
+ref="${2-${1-HEAD}}"
+
+wd="$(pwd)"
+cd "$R"
+git archive \
+  --format tar.gz \
+  --prefix "$pkg-$ver/" \
+  --output "$wd/$pkg-$ver.tar.gz" \
+  "$ref"

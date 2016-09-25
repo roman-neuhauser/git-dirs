@@ -1,0 +1,27 @@
+# $FreeBSD$
+
+PORTNAME=	git-dirs
+PORTVERSION=	__VERSION__
+CATEGORIES=	devel
+
+COMMENT=	Manage multiple gitdirs
+LICENSE=	MIT
+MAINTAINER=	neuhauser+git-dirs@sigpipe.cz
+
+HAS_CONFIGURE=	yes
+CONFIGURE_ARGS+= --prefix=${PREFIX}
+CONFIGURE_ARGS+= --mandir=${MANPREFIX}/man
+USES+=		gmake
+MAKEFILE=	GNUmakefile
+TEST_TARGET=	check
+
+USE_GITHUB=	yes
+GH_ACCOUNT=	roman-neuhauser
+GH_PROJECT=	${PORTNAME}
+GH_TAGNAME=	v${PORTVERSION:S/+/-/g}
+
+TEST_DEPENDS=	cram:devel/cram
+
+NO_CHECKSUM=	yes
+
+.include <bsd.port.mk>

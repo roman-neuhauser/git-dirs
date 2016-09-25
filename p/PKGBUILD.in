@@ -1,0 +1,34 @@
+# Maintainer: Roman Neuhauser <neuhauser+git-dirs@sigpipe.cz>
+pkgname=git-dirs
+pkgver=__VERSION__
+pkgrel=1
+pkgdesc="Manage multiple gitdirs"
+arch=(any)
+url="https://github.com/roman-neuhauser/$pkgname"
+license=(MIT)
+depends=(git haveopt zsh)
+checkdepends=(cram git haveopt zsh)
+source=($pkgname-$pkgver.tar.gz)
+sha1sums=(SKIP)
+
+build()
+{
+  _in_src ./configure --prefix=/usr
+  _in_src make
+}
+
+check()
+{
+  _in_src make check CRAMFLAGS=-v
+}
+
+package()
+{
+  _in_src make install DESTDIR="$pkgdir/"
+}
+
+_in_src()
+(
+  cd "$srcdir/$pkgname-$pkgver"
+  "$@"
+)

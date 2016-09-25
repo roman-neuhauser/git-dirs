@@ -1,0 +1,44 @@
+# norootforbuild
+# Maintainer: Roman Neuhauser <neuhauser+git-dirs@sigpipe.cz>
+
+Name:           git-dirs
+Version:        __VERSION__
+Release:        0
+License:        MIT
+Summary:        Manage multiple gitdirs
+Url:            https://github.com/roman-neuhauser/%{name}
+Group:          Development/Tools/Version Control
+Source:         %{name}-%{version}.tar.gz
+BuildRequires:  filesystem
+BuildArch:      noarch
+BuildRoot:      %_tmppath/%name-%version-build
+Requires:       git
+Requires:       haveopt
+Requires:       zsh
+BuildRequires:  cram
+BuildRequires:  git
+BuildRequires:  haveopt
+BuildRequires:  zsh
+
+%description
+Manage multiple gitdirs.
+
+%prep
+%setup -q
+
+%build
+%configure
+make
+
+%check
+make check
+
+%install
+make install DESTDIR=%{buildroot}
+
+%files
+%defattr(-,root,root)
+%{_bindir}/git-dirs
+%{_mandir}/man1/git-dirs.1.gz
+
+%changelog

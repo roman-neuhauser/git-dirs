@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+src="$1"
+dst="$2"
+pat="$3"
+ver="$(./git-versionstring "${4-HEAD}")"
+
+  sed -e "/$pat/s/__VERSION__/$ver/" "$src" \
+| tee "$dst" >/dev/null
