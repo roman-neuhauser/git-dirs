@@ -1,0 +1,96 @@
+#compdef git-dirs
+#description manage multiple git dirs
+# vim: ts=2 sts=2 sw=2 et fdm=marker cms=\ #\ %s
+
+# WARNING: BADLY BROKEN!
+# git dirs completion for Zsh, for use with compinit
+# put this file early on your $fpath and run
+#
+# $ unfunction _git
+# $ compinit
+
+function _git-dirs # {{{
+{
+  local -A opt_args
+  local -a state
+  _git-dirs-_args \
+    - '(help)' \
+      '-h[Display usage]' \
+      '--help[Display man page]' \
+    - 'command' \
+      ":command:_git-dirs-_verb" \
+      "*:option or operand:_git-dirs-_verb-arg"
+} # }}}
+
+function _git-dirs-_verb # {{{
+{
+  local -a _commands=(
+    activate:'Associate $PWD with REPO'
+    active:'Show the currently active repository'
+    clone:'Clone URL into .git-dirs/repo.d/REPO'
+    init:'Initialize a repository in .git-dirs/repo.d/REPO'
+    list:'List repositories in .git-dirs/repo.d'
+  )
+  _describe -t commands command _commands
+} # }}}
+
+function _git-dirs-_verb-arg # {{{
+{
+  local cmd=$words[2]
+  local rv=1
+
+  :; _call_function rv _git-dirs-$cmd \
+  || _message -r "unknown command: $cmd"
+  :; return $rv
+} # }}}
+
+function _git-dirs-activate # {{{
+{
+  local -a repos=(.git-dirs/repo.d/*(/N:t))
+  _git-dirs-_args \
+  - '(help)' \
+    {-h,--help}'[Display usage]' \
+  - '...' \
+    ":REPO:($repos)"
+} # }}}
+
+function _git-dirs-clone # {{{
+{
+  _git-dirs-_args \
+  - '(help)' \
+    {-h,--help}'[Display usage]' \
+  - '...' \
+    {-N,--no-activate}'[Do not activate the repository]' \
+    ':URL: ' \
+    '::REPO: '
+} # }}}
+
+function _git-dirs-init # {{{
+{
+  _git-dirs-_args \
+  - '(help)' \
+    {-h,--help}'[Display usage]' \
+  - '...' \
+    {-N,--no-activate}'[Do not activate the repository]' \
+    ':REPO: '
+} # }}}
+
+function _git-dirs-active _git-dirs-list # {{{
+{
+  _git-dirs-_args \
+  - '(help)' \
+    {-h,--help}'[Display usage]' \
+  - '(full)' \
+    {-f,--full}'[Display full paths]' \
+  - '(relative)' \
+    {-r,--relative}'[Display relative paths]' \
+  - '(short)' \
+    {-s,--short}'[Display basenames]'
+} # }}}
+
+function _git-dirs-_args # {{{
+{
+  _arguments -S -s : "$@"
+} # }}}
+
+_git-dirs "$@"
