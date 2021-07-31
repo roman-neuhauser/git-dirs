@@ -52,6 +52,7 @@ mksubstvars() # {{{
 	  -e "s@prefix@$prefixg" \\
 	  -e "s@pkgname@$pkgnameg" \\
 	  -e "s@CRAM@$CRAMg" \\
+	  -e "s@CRAMFLAGS@$CRAMFLAGSg" \\
 	  -e "s@HAVEOPT_SH@$HAVEOPT_SHg" \\
 	  -e "s@RST2HTML@$RST2HTMLg" \\
 	  -e "s@RST2HTMLFLAGS@$RST2HTMLFLAGSg" \\
@@ -83,6 +84,13 @@ for a in "$@"; do
   ;;
   --mandir=*)       mandir="${a#*=}"      ;;
   --prefix=*)       prefix="${a#*=}"      ;;
+
+  CRAM=*)           CRAM="${a#*=}"        ;;
+  CRAMFLAGS=*)      CRAMFLAGS="${a#*=}"   ;;
+
+  RST2HTML=*)       RST2HTML="${a#*=}"    ;;
+  RST2HTMLFLAGS=*)  RST2HTMLFLAGS="${a#*=}" ;;
+
   HAVEOPT_SH=*)     HAVEOPT_SH="${a#*=}"  ;;
   ZSH=*)            ZSH="${a#*=}"         ;;
   esac

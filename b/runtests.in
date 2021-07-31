@@ -4,15 +4,17 @@ set -eu
 
 testroot="@rootdir@/t" # FIXME: don't hardcode "/t" here?
 ZSH="@ZSH@"
-CRAM="@CRAM@"
+cram="@CRAM@"
+: ${CRAMFLAGS="@CRAMFLAGS@"}
+
+test $# -gt 0 || set -- "$testroot"
 
 env -i \
   PATH="$PATH" \
   TESTROOT="$testroot" \
   BUILDDIR="$PWD" \
   ZSH="$ZSH" \
-  $CRAM \
+  $cram \
   --shell="$ZSH" \
-  ${CRAMFLAGS+$CRAMFLAGS} \
-  "${1-$testroot}" \
+  $CRAMFLAGS \
   "$@"
