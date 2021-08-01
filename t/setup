@@ -8,6 +8,8 @@ export PATH="$PWD/.bin:$BUILDDIR:$TESTROOT:$PATH"
 export HOME="$PWD"
 export ZSH="$ZSH"
 
+export GIT_CEILING_DIRECTORIES=$HOME:h
+
 function fake # {{{
 {
   local opts=
