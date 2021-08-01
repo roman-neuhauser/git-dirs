@@ -8,7 +8,7 @@ setopt err_return
 setopt no_unset
 setopt warn_create_global
 
-declare -gr cmdname=${SMRT_CMDNAME-$0:t}
+declare -gr cmdname=${0:t}
 
 function $cmdname-main # {{{
 {
