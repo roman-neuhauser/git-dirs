@@ -15,7 +15,7 @@ usage::
 
   $ git dirs clone -h
   usage: git dirs clone -h | --help
-  usage: git dirs clone [--no-activate] URL [REPO]
+  usage: git dirs clone [--no-activate] [--origin NAME] URL [REPO]
   
   Clone repository at URL into .git-dirs/repo.d/REPO.
   REPO defaults to the basename of URL without any .git suffix.
@@ -23,6 +23,7 @@ usage::
   Options:
     -h, --help        Display this message
     -A, --no-activate Do not activate the repository
+    -o, --origin NAME Use NAME instead of "origin" for upstream
   
   Operands:
     REPO              Name of a directory in .git-dirs/repo.d

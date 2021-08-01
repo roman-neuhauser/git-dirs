@@ -22,7 +22,7 @@
       `git dirs` -h | --help
       `git dirs` activate REPO
       `git dirs` active [--full | --relative | --short]
-      `git dirs` clone [--no-activate] URL [REPO]
+      `git dirs` clone [--no-activate] [--origin NAME] URL [REPO]
       `git dirs` init [--no-activate] REPO
       `git dirs` list [--full | --relative | --short]
 
@@ -54,12 +54,14 @@
         `-r`, `--relative`  Display relative path from the top of the work tree.
         `-s`, `--short`     Display basename.
 
-      `clone [--no-activate] URL [REPO]`
+      `clone [--no-activate] [--origin NAME] URL [REPO]`
         Clone repository at `URL` into `.git-dirs/repo.d/REPO`.
         `REPO` defaults to the basename of `URL` without any `.git` suffix.
 
         `-N`, `--no-activate`
           Do not activate the repository.
+        `-o`, `--origin` `NAME`
+          Use `NAME` instead of "origin" for upstream.
 
       `init [--no-activate] REPO`
         Initialize a repository in `.git-dirs/repo.d/REPO`

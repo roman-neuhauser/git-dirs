@@ -47,7 +47,7 @@ Usage
   usage: git dirs -h|--help
   usage: git dirs activate REPO
   usage: git dirs active [--full|--relative|--short]
-  usage: git dirs clone [--no-activate] URL [REPO]
+  usage: git dirs clone [--no-activate] [--origin NAME] URL [REPO]
   usage: git dirs init [--no-activate] REPO
   usage: git dirs list [--full|--relative|--short]
 

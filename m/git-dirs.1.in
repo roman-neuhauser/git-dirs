@@ -23,6 +23,7 @@
 .Nm
 . Cm clone
 . Op Fl -no-activate
+. Op Fl -origin Ar NAME
 . Ar URL
 . Op Ar REPO
 .Nm
@@ -86,7 +87,7 @@ Display relative path from the top of the work tree.
 Display basename.
 . El
 .
-.It Cm clone Oo Fl -no-activate Oc Ar URL Oo Ar REPO Oc
+.It Cm clone Oo Fl -no-activate Oc Oo Fl -origin Ar NAME Oc Ar URL Oo Ar REPO Oc
 Clone repository at
 . Ar URL
 into
@@ -101,6 +102,12 @@ suffix.
 . Bl -tag -width xx -compact
 . It Fl N , -no-activate
 Do not activate the repository.
+. It Fl o , -origin Ar NAME
+Use
+. Ar NAME
+instead of
+. Dq Li origin
+for upstream.
 . El
 .
 .It Cm init Oo Fl -no-activate Oc Ar REPO

@@ -200,7 +200,7 @@ function do-clone # {{{
 {
   local -r usage='
   usage: #c clone -h | --help
-  usage: #c clone [--no-activate] URL [REPO]
+  usage: #c clone [--no-activate] [--origin NAME] URL [REPO]
 
   Clone repository at URL into .git-dirs/repo.d/REPO.
   REPO defaults to the basename of URL without any .git suffix.
@@ -208,6 +208,7 @@ function do-clone # {{{
   Options:
     -h, --help        Display this message
     -A, --no-activate Do not activate the repository
+    -o, --origin NAME Use NAME instead of "origin" for upstream
 
   Operands:
     REPO              Name of a directory in .git-dirs/repo.d
@@ -216,13 +217,15 @@ function do-clone # {{{
   local -a options=(
     h   help
     A   no-activate
+    o=  origin=
   )
-  local opt arg
+  local opt arg o_origin=origin
   local -i i=0 o_activate=1
   while haveopt i opt arg $=options -- "$@"; do
     case $opt in
     A|no-activate)  o_activate=0 ;;
     h|help)         display-help $opt[1] ;;
+    o|origin)       o_origin=$arg ;;
     *)              reject-misuse -$arg ;;
     esac
   done; shift $i
@@ -234,10 +237,11 @@ function do-clone # {{{
   local -r repo=$repodir/$name
 
   [[ -e $repo ]] && reject 1 "path exists: ${(D)repo}"
-  mkdir -p $repo
-  git clone -q --bare $url $repo
-  git config --file $repo/config core.bare false
-  git config --file "$repo/config" core.worktree ../../..
+  mkdir -p $repo:h
+  local wt=$(mktemp -d)
+  git clone -q --no-checkout --separate-git-dir $repo --origin $o_origin $url $wt
+  rm $wt/.git && rmdir $wt
+  git config --file $repo/config core.worktree ../../..
   print -l -- /.git-dirs >> $repo/info/exclude
   print -f "cloned %s from %s\n" "${(D)repo}" "$url"
   (( o_activate )) || return 0
