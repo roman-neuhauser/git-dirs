@@ -100,7 +100,7 @@ without any
 suffix.
 . Pp
 . Bl -tag -width xx -compact
-. It Fl N , -no-activate
+. It Fl A , -no-activate
 Do not activate the repository.
 . It Fl o , -origin Ar NAME
 Use
@@ -116,7 +116,7 @@ Initialize a repository in
 and activate it.
 . Pp
 . Bl -tag -width xx -compact
-. It Fl N , -no-activate
+. It Fl A , -no-activate
 Do not activate the repository.
 . El
 .

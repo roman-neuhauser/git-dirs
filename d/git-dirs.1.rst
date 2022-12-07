@@ -58,7 +58,7 @@
         Clone repository at `URL` into `.git-dirs/repo.d/REPO`.
         `REPO` defaults to the basename of `URL` without any `.git` suffix.
 
-        `-N`, `--no-activate`
+        `-A`, `--no-activate`
           Do not activate the repository.
         `-o`, `--origin` `NAME`
           Use `NAME` instead of "origin" for upstream.
@@ -67,7 +67,7 @@
         Initialize a repository in `.git-dirs/repo.d/REPO`
         and activate it.
 
-        `-N`, `--no-activate`
+        `-A`, `--no-activate`
           Do not activate the repository.
 
       `list [--full | --relative | --short]`
